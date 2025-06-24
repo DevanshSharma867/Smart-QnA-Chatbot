@@ -27,11 +27,11 @@ json_rag:
   k: 5
 
 json_sqlagent_configs:
-  json_sqldb_dir: "data/json_rag.db"
+  json_sqldb_dir: "data/json_sql.db"
   llm: "gpt-4o-mini"
   llm_temperature: 0.0
 
 csv_sqlagent_configs:
-  csv_sqldb_dir: "data/csv_rag.db"
+  csv_sqldb_dir: "data/csv_sql.db"
   llm: "gpt-4o-mini"
   llm_temperature: 0.0
