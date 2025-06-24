@@ -345,7 +345,7 @@ if __name__ == "__main__":
     embedding_model = app_config["csv_rag"]["embedding_model"]
     vectordb_dir = app_config["csv_rag"]["vectordb"]
     collection_name = app_config["csv_rag"]["collection_name"]
-    doc_dir = app_config["csv_rag"]["docs"]
+    doc_dir = app_config["csv_rag"]["unstructured_docs"]
 
     prepare_db_instance = PrepareVectorDB(
         doc_dir=doc_dir,
@@ -366,7 +366,7 @@ if __name__ == "__main__":
     embedding_model = app_config["json_rag"]["embedding_model"]
     vectordb_dir = app_config["json_rag"]["vectordb"]
     collection_name = app_config["json_rag"]["collection_name"]
-    doc_dir = app_config["json_rag"]["docs"]
+    doc_dir = app_config["json_rag"]["unstructured_docs"]
 
     prepare_db_instance = PrepareVectorDB(
         doc_dir=doc_dir,

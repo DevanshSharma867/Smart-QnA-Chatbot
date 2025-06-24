@@ -3,6 +3,8 @@ data/docs/csv_files/*.csv
 data/docs/json_files/*.json
 data/csv_vectordb/
 data/json_vectordb/
+data/csv_rag.db
+data/json_rag.db
 
 # Ignore Python cache and environment files
 __pycache__/
