@@ -1,0 +1,27 @@
+primary_agent:
+  llm: gpt-4o-mini
+  llm_temperature: 0.0
+
+#This is the config for the csv file
+csv_rag:
+  unstructured_docs: "data/docs/csv_files"
+  vectordb: "data/csv_vectordb"
+  collection_name: csv-rag-chroma
+  llm: gpt-4o-mini
+  llm_temperature: 0.0
+  embedding_model: text-embedding-3-small
+  chunk_size: 500
+  chunk_overlap: 150
+  k: 3
+
+#This is the config for the json file
+json_rag:
+  unstructured_docs: "data/docs/json_files"
+  vectordb: "data/json_vectordb"
+  collection_name: json-rag-chroma
+  llm: gpt-4o-mini
+  llm_temperature: 0.0
+  embedding_model: text-embedding-3-small
+  chunk_size: 50
+  chunk_overlap: 12
+  k: 5
