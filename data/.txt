@@ -1,0 +1,3 @@
+Your vector databaes and SQLlite databaes will be stored here.
+The vector databaes are used for a RAG approach.
+The SQLlite databaes are used for SQLagent apporach.
