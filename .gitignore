@@ -1,0 +1,36 @@
+# Ignore data files (raw, processed, vector DBs, cache, etc.)
+data/docs/csv_files/*.csv
+data/docs/json_files/*.json
+data/csv_vectordb/
+data/json_vectordb/
+
+# Ignore Python cache and environment files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv/
+venv/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore log files
+*.log
+
+# Ignore SQLite and pickle files
+*.sqlite3
+*.pickle
+*.bin
+
+# Ignore any other secrets or credentials
+*.secret
+*.key
+*.pem
+*.crt
+*.cache 
