@@ -5,6 +5,8 @@ data/csv_vectordb/
 data/json_vectordb/
 data/csv_rag.db
 data/json_rag.db
+data/csv_sql.db
+data/json_sql.db
 
 # Ignore Python cache and environment files
 __pycache__/
