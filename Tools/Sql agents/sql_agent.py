@@ -4,6 +4,7 @@ from pyprojroot import here
 from langchain_community.utilities import SQLDatabase
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_sql_query_chain
+from sqlalchemy import text
 
 load_dotenv()
 
@@ -14,12 +15,21 @@ class SingleTableSQLAgent:
         self.query_chain = create_sql_query_chain(self.sql_agent_llm, self.db)
         self.table_info = self.db.get_table_info()
 
-    def query(self, question: str) -> str:
+    def query(self, question: str):
+        """
+        Execute a natural language query against the database and return (rows, columns).
+        Returns:
+            tuple: (rows, columns) where rows is a list of tuples and columns is a list of column names
+        """
         try:
             raw_sql_query = self.query_chain.invoke({"question": question})
             sql_query = self._clean_sql_query(raw_sql_query)
-            result = self.db.run(sql_query)
-            return result
+            # Use SQLAlchemy engine to get both rows and column names
+            with self.db._engine.connect() as conn:
+                result_proxy = conn.execute(text(sql_query))
+                rows = result_proxy.fetchall()
+                columns = list(result_proxy.keys())
+            return rows, columns
         except Exception as e:
             return f"Error executing query: {str(e)}"
 
@@ -35,28 +45,44 @@ class SingleTableSQLAgent:
             cleaned_query = cleaned_query[:-3].strip()
         return cleaned_query
 
-    def get_sample_data(self, limit: int = 5) -> str:
+    def get_sample_data(self, limit: int = 20):
         table_name = self.db.get_usable_table_names()[0]
         query = f"SELECT * FROM {table_name} LIMIT {limit};"
-        return self.db.run(query)
+        with self.db._engine.connect() as conn:
+            result_proxy = conn.execute(text(query))
+            rows = result_proxy.fetchall()
+            columns = list(result_proxy.keys())
+        return rows, columns
 
-    def get_column_info(self) -> str:
+    def get_column_info(self):
         table_name = self.db.get_usable_table_names()[0]
         query = f"PRAGMA table_info({table_name});"
-        return self.db.run(query)
+        with self.db._engine.connect() as conn:
+            result_proxy = conn.execute(text(query))
+            rows = result_proxy.fetchall()
+            columns = list(result_proxy.keys())
+        return rows, columns
 
     def get_table_stats(self) -> dict:
         table_name = self.db.get_usable_table_names()[0]
         count_query = f"SELECT COUNT(*) as total_rows FROM {table_name};"
-        row_count = self.db.run(count_query)
+        with self.db._engine.connect() as conn:
+            result_proxy = conn.execute(text(count_query))
+            row_count = result_proxy.fetchall()
+            columns = list(result_proxy.keys())
         return {
             "table_name": table_name,
             "total_rows": row_count,
             "column_info": self.get_column_info()
         }
 
-def query_single_table_db(query: str) -> str:
-    sqldb_directory = here("data/csv_sql.db")
+def query_single_table_db(query: str):
+    """
+    Query the single table database and return (rows, columns).
+    Returns:
+        tuple: (rows, columns) where rows is a list of tuples and columns is a list of column names
+    """
+    sqldb_directory = str(here("data/csv_sql.db"))
     agent = SingleTableSQLAgent(
         sqldb_directory=sqldb_directory,
         llm_model="gpt-4o-mini",
