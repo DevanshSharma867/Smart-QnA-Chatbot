@@ -1,3 +1,6 @@
+streamlit
+pandas
+ruamel.yaml
 pyprojroot
 langchain-chroma
 langchain-community
@@ -5,4 +8,7 @@ langchain-openai
 langchain-text-splitters
 tiktoken
 python-dotenv
-pyyaml 
+pyyaml
+sqlalchemy
+openai
+concurrent.futures
