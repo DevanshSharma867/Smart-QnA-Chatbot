@@ -137,7 +137,3 @@ streamlit run src/chatbot_app.py
 - **Vector DB/SQL DB not updating**: Rerun the preparation scripts after adding new data.
 
 ---
-
-## License
-
-MIT License (or specify your own)
