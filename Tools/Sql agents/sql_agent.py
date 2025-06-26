@@ -5,6 +5,8 @@ from langchain_community.utilities import SQLDatabase
 from langchain_openai import ChatOpenAI
 from langchain.chains import create_sql_query_chain
 from sqlalchemy import text
+import logging
+import re
 
 load_dotenv()
 
@@ -34,19 +36,23 @@ class SingleTableSQLAgent:
             return f"Error executing query: {str(e)}"
 
     def _clean_sql_query(self, raw_query: str) -> str:
-        prefixes_to_remove = [
-            "SQLQuery: ", "SQL Query: ", "Query: ", "SQL: ", "```sql\n", "```\n", "sql\n"
-        ]
+        prefixes_pattern = r'^(?:[`\n\s]*)?(SQLQuery:|SQL Query:|Query:|SQL:|```sql|```|sql)([\s\n]*)'
         cleaned_query = raw_query.strip()
-        for prefix in prefixes_to_remove:
-            if cleaned_query.startswith(prefix):
-                cleaned_query = cleaned_query[len(prefix):].strip()
+        logging.info(f"Raw SQL query before cleaning: {repr(raw_query)}")
+        # Remove code block markers and all known prefixes iteratively
+        while True:
+            new_query = re.sub(prefixes_pattern, '', cleaned_query, flags=re.IGNORECASE)
+            if new_query == cleaned_query:
+                break
+            cleaned_query = new_query.strip()
+        # Remove trailing triple backticks if present
         if cleaned_query.endswith("```"):
             cleaned_query = cleaned_query[:-3].strip()
+        logging.info(f"Cleaned SQL query: {repr(cleaned_query)}")
         return cleaned_query
 
     def get_sample_data(self, limit: int = 20):
-        table_name = self.db.get_usable_table_names()[0]
+        table_name = list(self.db.get_usable_table_names())[0]
         query = f"SELECT * FROM {table_name} LIMIT {limit};"
         with self.db._engine.connect() as conn:
             result_proxy = conn.execute(text(query))
@@ -55,7 +61,7 @@ class SingleTableSQLAgent:
         return rows, columns
 
     def get_column_info(self):
-        table_name = self.db.get_usable_table_names()[0]
+        table_name = list(self.db.get_usable_table_names())[0]
         query = f"PRAGMA table_info({table_name});"
         with self.db._engine.connect() as conn:
             result_proxy = conn.execute(text(query))
@@ -64,7 +70,7 @@ class SingleTableSQLAgent:
         return rows, columns
 
     def get_table_stats(self) -> dict:
-        table_name = self.db.get_usable_table_names()[0]
+        table_name = list(self.db.get_usable_table_names())[0]
         count_query = f"SELECT COUNT(*) as total_rows FROM {table_name};"
         with self.db._engine.connect() as conn:
             result_proxy = conn.execute(text(count_query))
