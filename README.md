@@ -49,9 +49,18 @@ Final/
 ---
 
 ## Setup Instructions
+### 1. **Clone the Repository**
 
-### 1. **Install Dependencies**
-
+```bash
+git clone https://github.com/DevanshSharma867/Smart-QnA-Chatbot.git
+cd Smart-QnA-Chatbot
+```
+### 2. **Install Dependencies**
+Optionally you can set up a venv
+```bash
+python -v venv venv
+venv\scripts\activate
+```
 ```bash
 pip install -r requirements.txt
 ```
