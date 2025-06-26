@@ -11,4 +11,3 @@ python-dotenv
 pyyaml
 sqlalchemy
 openai
-concurrent.futures
