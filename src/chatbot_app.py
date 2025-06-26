@@ -166,6 +166,7 @@ class DataAnalysisChatbot:
                     # Ensure columns are strings and convert to Index
                     columns = Index([str(col) for col in columns])
                     df = pd.DataFrame(rows, columns=columns)
+                    df.index = df.index + 1  # Make index start from 1
                     st.dataframe(df, use_container_width=True)
                     return True
             # Fallback: try to parse as Python literal
@@ -174,14 +175,18 @@ class DataAnalysisChatbot:
                 if isinstance(parsed, list) and len(parsed) > 0:
                     if isinstance(parsed[0], (tuple, list)):
                         df = pd.DataFrame(parsed)
+                        df.index = df.index + 1  # Make index start from 1
                         st.dataframe(df, use_container_width=True)
                         return True
                     elif isinstance(parsed[0], dict):
                         df = pd.DataFrame(parsed)
+                        df.index = df.index + 1  # Make index start from 1
                         st.dataframe(df, use_container_width=True)
                         return True
                 elif isinstance(parsed, pd.DataFrame):
-                    st.dataframe(parsed, use_container_width=True)
+                    df = parsed.copy()
+                    df.index = df.index + 1  # Make index start from 1
+                    st.dataframe(df, use_container_width=True)
                     return True
         except Exception as e:
             logger.debug(f"Table formatting failed: {str(e)}")
